@@ -1,25 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import InputForm from "./InputForm";
+import React from 'react';
+import ToDo from "./ToDo";
 
-function App() {
+const App = () => {
+
+  const [tasks, setTask] = React.useState([])
+
+  const createTask = (dataInput) => {
+    debugger
+    if (dataInput) {
+      let newItem = {
+        id: Math.random().toString(36).substr(2, 9),
+        task: dataInput,
+        complete: false,
+      }
+      setTask([...tasks, newItem])
+    }
+  }
+
+  const removeTask = id => {
+    setTask([
+      ...tasks.filter(task => {
+        return task.id !== id
+      })
+    ])
+  }
+
+  const handleToggle = (id) => {
+    setTask([
+      ...tasks.map((task) =>
+        task.id === id ? { ...task, complete: !task.complete } : { ...task }
+      )
+    ])
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <h1>Список задач: {tasks.length}</h1>
       </header>
+      <InputForm createTask={createTask} />
+      {tasks.map(task =>
+        <ToDo
+          task={task}
+          key={task.id}
+          toggleTask={handleToggle}
+          removeTask={removeTask} />)}
     </div>
-  );
+  )
 }
 
 export default App;
+
+
+
